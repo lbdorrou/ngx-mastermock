@@ -121,6 +121,46 @@
           }
         }
       }
+    },
+    "ngx-mastermock": {
+      "root": "projects/ngx-mastermock",
+      "sourceRoot": "projects/ngx-mastermock/src",
+      "projectType": "library",
+      "prefix": "mock",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-mastermock/tsconfig.lib.json",
+            "project": "projects/ngx-mastermock/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/ngx-mastermock/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-mastermock/src/test.ts",
+            "tsConfig": "projects/ngx-mastermock/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-mastermock/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-mastermock/tsconfig.lib.json",
+              "projects/ngx-mastermock/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-mastermock-app"
