@@ -1,30 +1,33 @@
+
 import { Injectable } from '@angular/core';
+
 import { MastermockResponse } from './models/mastermock-response.interface';
 import { HttpRequest } from '@angular/common/http';
 
-@Injectable()
-export class ContextService {
 
-    private context: any;
-    private mockdata: boolean;
+export class MockEnvironment {
+
+    private fileContext: any = null;
+    private enabled = false;
 
     private urlMap: any;
     private regexUrlMap: any;
 
     private wildCardPattern = /\${[^}]+}+/g;
 
-    setContext(context: any, mockdata: boolean): void {
-        this.context = context();
-        this.mockdata = mockdata;
+    static initTestEnvironment(fileContext: any): MockEnvironment {
+      const mockEnvironment = getMockEnvironment();
+      mockEnvironment.initTestEnvironment(fileContext);
+      return mockEnvironment;
     }
 
     initMockFiles(): void {
         this.urlMap = {};
         this.regexUrlMap = {};
 
-        for (let i = 0; i < this.context.keys().length; i++) {
-            const key = this.context.keys()[i];
-            const mock = this.context(key);
+        for (let i = 0; i < this.fileContext.keys().length; i++) {
+            const key = this.fileContext.keys()[i];
+            const mock = this.fileContext(key);
 
             if (mock.default && mock.default.prototype.registerEndpoints) {
                 const mockClass = new mock.default();
@@ -91,12 +94,26 @@ export class ContextService {
         return contextUrl.endpoint.call(contextUrl.parent, request, wildcards, urlParams);
     }
 
-    isMockData() {
-        return this.mockdata;
+    initTestEnvironment(fileContext: any) {
+      if (fileContext) {
+          this.fileContext = fileContext;
+          this.initMockFiles();
+          this.enabled = true;
+      }
     }
 
-    getContext() {
-        return this.context;
+    getFileContext() {
+        return this.fileContext;
     }
 
+    getEnabled() {
+        return this.enabled;
+    }
+
+}
+
+let _mockEnvironment: MockEnvironment = null;
+
+export function getMockEnvironment() {
+  return _mockEnvironment = _mockEnvironment || new MockEnvironment();
 }

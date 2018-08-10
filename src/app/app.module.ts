@@ -1,22 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
-// Dev proxy
-import { HttpClientModule } from '@angular/common/http';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-
-import { NgxMastermockModule, MastermockInterceptor } from 'ngx-mastermock';
-
-import { environment } from '../environments/environment';
-// End Dev proxy
-
-declare var require: any;
-export function devProxyContextFactory(): any {
-    return require.context('./', true, /\.dev\.ts/);
-}
-
+import { MastermockInterceptor } from 'ngx-mastermock';
 
 
 @NgModule({
@@ -25,8 +13,7 @@ export function devProxyContextFactory(): any {
   ],
   imports: [
     HttpClientModule,
-    BrowserModule,
-    NgxMastermockModule.forRoot(environment.useMockData, devProxyContextFactory)
+    BrowserModule
   ],
   providers: [
     {

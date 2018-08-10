@@ -44,6 +44,9 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "mastermock": {
+              "main": "src/main-mock.ts"
             }
           }
         },
@@ -55,6 +58,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ngx-mastermock-app:build:production"
+            },
+            "mastermock": {
+              "browserTarget": "ngx-mastermock-app:build:mastermock"
             }
           }
         },

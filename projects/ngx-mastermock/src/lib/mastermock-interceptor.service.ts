@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent } from '@angular/common/http';
 
-import { ContextService } from './context.service';
+import { getMockEnvironment } from './mock-environment.service';
 
 import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
@@ -10,13 +10,12 @@ import { delay } from 'rxjs/operators';
 @Injectable()
 export class MastermockInterceptor implements HttpInterceptor {
 
-  constructor(private context: ContextService) { }
-
+  constructor() { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    if (this.context && this.context.isMockData()) {
-      const devResponse = this.context.retrieveResponse(request);
+    if (getMockEnvironment().getEnabled()) {
+      const devResponse =  getMockEnvironment().retrieveResponse(request);
       if (devResponse.serverPassthrough) {
         return next.handle(request);
       }
