@@ -86,7 +86,7 @@ export default class implements Mastermock {
 }
 ```
 
-Run **ng service --configuration mastermock** and the mock data will be picked up and used instead of a live server
+Run **ng serve --configuration mastermock** and the mock data will be picked up and used instead of a live server
 
 ## Why does this exist?
 
