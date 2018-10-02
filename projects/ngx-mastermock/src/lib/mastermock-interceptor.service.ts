@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 
 import { getMockEnvironment } from './mock-environment.service';
 
@@ -19,11 +19,13 @@ export class MastermockInterceptor implements HttpInterceptor {
       if (devResponse.serverPassthrough) {
         return next.handle(request);
       }
-      if (devResponse.response.status === 400 || devResponse.response.status === 404 || devResponse.response.status === 500) {
+      if (devResponse.response instanceof HttpErrorResponse ) {
         return throwError(devResponse.response);
       } else {
         return of(devResponse.response).pipe(delay(devResponse.delay || 10));
       }
+
+
     } else {
       return next.handle(request);
     }

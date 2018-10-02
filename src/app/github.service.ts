@@ -17,6 +17,8 @@ export class GithubService {
     .subscribe(
       (response: any) => {
         this.angularVersions$.next(response);
+      },
+      (error: any) => {
       });
   }
 
