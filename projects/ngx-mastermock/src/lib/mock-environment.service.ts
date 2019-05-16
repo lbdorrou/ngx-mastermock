@@ -1,9 +1,5 @@
-
-import { Injectable } from '@angular/core';
-
 import { MastermockResponse } from './models/mastermock-response.interface';
 import { HttpRequest } from '@angular/common/http';
-
 
 export class MockEnvironment {
 
@@ -66,22 +62,43 @@ export class MockEnvironment {
         const trimmedUrl = fullUrl.split('?')[0];
 
         let contextUrl = this.urlMap[trimmedUrl];
-
         let wildcards: Array<string>;
 
         if (!contextUrl) {
+            const validUrls = [];
             for (const url in this.regexUrlMap) {
                 if (this.regexUrlMap.hasOwnProperty(url)) {
                     const matchedUrl = new RegExp(url).exec(trimmedUrl);
                     if (matchedUrl) {
-                        contextUrl = this.regexUrlMap[url];
-                        wildcards = matchedUrl.slice(1);
-                        break;
+                        validUrls.push({
+                            'matchedUrl': url,
+                            'urlMap': this.regexUrlMap[url],
+                            'wildcards': matchedUrl.slice(1)
+                        });
                     }
                 }
             }
-        }
 
+            if (validUrls.length > 1) {
+                const requestedPath = new URL(trimmedUrl).pathname.split('/').filter(e => e);
+                validUrls.forEach(validUrl => {
+                    const testPath = new URL(validUrl.matchedUrl).pathname.split('/').filter(e => e);
+                    if (this.pathsAreEqual(requestedPath, testPath)) {
+                        contextUrl = validUrl.urlMap;
+                        wildcards = validUrl.wildcards;
+                    }
+                });
+                if (!contextUrl) {
+                    console.warn('Previously found valid regex urls, but could not find exact match. ' +
+                                 'Using first of valid regex urls for mock');
+                }
+            }
+
+            if (validUrls.length === 1 || !contextUrl) {
+                contextUrl = validUrls[0].urlMap;
+                wildcards = validUrls[0].wildcards;
+            }
+        }
 
         if (!contextUrl) {
             console.error(`Requested devopment mock file for ${request.url} but none was found. Falling back to server`);
@@ -92,6 +109,22 @@ export class MockEnvironment {
         }
 
         return contextUrl.endpoint.call(contextUrl.parent, request, wildcards, urlParams);
+    }
+
+    pathsAreEqual(requestedPath: Array<string>, testPath: Array<string>) {
+        if (!Array.isArray(requestedPath) || !Array.isArray(testPath) || requestedPath.length !== testPath.length) {
+            return false;
+        }
+
+        for (let i = 0; i < requestedPath.length; i++) {
+            if (testPath[i].includes('([a-zA-Z0-9$-_.+!*(),%20]+)')) {
+                continue;
+            } else if (requestedPath[i] !== testPath[i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     initTestEnvironment(fileContext: any) {
