@@ -80,9 +80,9 @@ export class MockEnvironment {
             }
 
             if (validUrls.length > 1) {
-                const requestedPath = new URL(trimmedUrl).pathname.split('/').filter(e => e);
+                const requestedPath = this.getUrlPath(trimmedUrl).split('/');
                 validUrls.forEach(validUrl => {
-                    const testPath = new URL(validUrl.matchedUrl).pathname.split('/').filter(e => e);
+                    const testPath = this.getUrlPath(validUrl.matchedUrl).split('\\/');
                     if (this.pathsAreEqual(requestedPath, testPath)) {
                         contextUrl = validUrl.urlMap;
                         wildcards = validUrl.wildcards;
@@ -111,13 +111,17 @@ export class MockEnvironment {
         return contextUrl.endpoint.call(contextUrl.parent, request, wildcards, urlParams);
     }
 
+    getUrlPath(url: string) {
+        return url.match(/^(?:[^\/]*(?:\/(?:\/[^\/]*\/?)?)?([^?]+)(?:\??.+)?)$/)[1];
+    }
+
     pathsAreEqual(requestedPath: Array<string>, testPath: Array<string>) {
         if (!Array.isArray(requestedPath) || !Array.isArray(testPath) || requestedPath.length !== testPath.length) {
             return false;
         }
 
         for (let i = 0; i < requestedPath.length; i++) {
-            if (testPath[i].includes('([a-zA-Z0-9$-_.+!*(),%20]+)')) {
+            if (testPath[i].includes('([a-zA-Z0-9$-_.+!*(), ]+')) {
                 continue;
             } else if (requestedPath[i] !== testPath[i]) {
                 return false;
