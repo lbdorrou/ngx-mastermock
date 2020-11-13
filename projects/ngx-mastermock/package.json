@@ -1,6 +1,6 @@
 {
   "name": "ngx-mastermock",
-  "version": "2.0.0-rc.0",
+  "version": "3.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/lbdorrou/ngx-mastermock"
@@ -8,7 +8,7 @@
   "author": "Lucas Dorrough",
   "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^7.0.0 || ^8.0.0",
-    "@angular/core": "^7.0.0 || ^8.0.0"
+    "@angular/common": "^9.0.0 || ^10.0.0",
+    "@angular/core": "^9.0.0 || ^10.0.0"
   }
 }

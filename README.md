@@ -3,7 +3,27 @@
 Mastermock was a tool designed to help develop angular applications without the need of a live server.
 This is accomplished without the need of spinning up a dummy server or bloating the production build.
 
-**This libaray is in it's early stages.. so some patterns could change**
+## Version 3 Upgrade
+
+Because of how angular is now compiled you will need a tsconfig.mock file to include the dev files and the main-mock file.
+
+```json
+ "files": [
+   ...
+    "main-mock.ts",
+  ],
+  "include": [
+   ...
+    "**/*.dev.ts"
+  ]
+```
+
+That will need to be added to your configuration in the angular.json config
+
+```json
+ "main": "src/main-mock.ts",
+  "tsConfig": "src/tsconfig.mock.json"
+```
 
 ## Setup
 
@@ -86,7 +106,7 @@ export default class implements Mastermock {
 }
 ```
 
-Run **ng service --configuration mastermock** and the mock data will be picked up and used instead of a live server
+Run **ng serve --configuration mastermock** and the mock data will be picked up and used instead of a live server
 
 ## Why does this exist?
 
