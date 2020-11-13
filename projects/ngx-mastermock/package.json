@@ -1,6 +1,6 @@
 {
   "name": "ngx-mastermock",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/lbdorrou/ngx-mastermock"
